@@ -91,7 +91,7 @@ export default {
     setContentId: function(id) {
       this.currentContent = id;
       Axios.get(
-        `https://hsttpx65oi.execute-api.us-west-2.amazonaws.com/dev/risk_type/${
+        `https://0n06dowzs1.execute-api.us-east-2.amazonaws.com/dev_us_east_2/risk_type/${
           this.currentContent
         }`
       ).then(response => {
@@ -102,7 +102,7 @@ export default {
     handleSubmit: function(ev) {
       ev.preventDefault();
       Axios.post(
-        `https://hsttpx65oi.execute-api.us-west-2.amazonaws.com/dev/risk`,
+        `https://0n06dowzs1.execute-api.us-east-2.amazonaws.com/dev_us_east_2/risk`,
         {
           json_body: JSON.stringify(this.form_fields)
         }
@@ -115,12 +115,12 @@ export default {
   },
   mounted() {
     Axios.get(
-      "https://hsttpx65oi.execute-api.us-west-2.amazonaws.com/dev/risk_type"
+      "https://0n06dowzs1.execute-api.us-east-2.amazonaws.com/dev_us_east_2/risk_type"
     ).then(response => {
       this.risk_types = response.data;
     });
     Axios.get(
-      `https://hsttpx65oi.execute-api.us-west-2.amazonaws.com/dev/risk_type/1`
+      `https://0n06dowzs1.execute-api.us-east-2.amazonaws.com/dev_us_east_2/risk_type/1`
     ).then(response => {
       this.risk_type = response.data;
     });
