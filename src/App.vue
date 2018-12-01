@@ -48,7 +48,11 @@
             </select>
           </div>
           <div>
-            <button v-if="risk_type.risk_name" v-on:click="handleSubmit">Submit</button>
+            <span style="color:red">{{ error_message }}</span>
+          </div>
+          <div>
+            <button v-if="risk_type.risk_name && !submitting" v-on:click="handleSubmit">Submit</button>
+            <span v-if="submitting">Submitting Risk Data...</span>
           </div>
         </form>
       </div>
@@ -81,7 +85,9 @@ export default {
       risk_types: null,
       risk_type: {},
       form_fields: {},
-      http_response: {}
+      http_response: {},
+      error_message: "",
+      submitting: false
     };
   },
   components: {
@@ -101,15 +107,45 @@ export default {
     },
     handleSubmit: function(ev) {
       ev.preventDefault();
-      Axios.post(
+      let canSubmit = true;
+
+      if (!Object.keys(this.form_fields).length) {
+        this.error_message = "* Please fill out all the fields";
+        return;
+      }
+
+      if (
+        Object.keys(this.form_fields).length !==
+        Object.keys(this.risk_type).length - 1
+      ) {
+        this.error_message = "* Please fill out all the fields";
+        return;
+      }
+
+      Object.keys(this.form_fields).forEach(key => {
+        if (!this.form_fields[key]) {
+          canSubmit = false;
+        }
+      });
+
+      if (!canSubmit) {
+        this.error_message = "* Please fill out all the fields";
+        return;
+      }
+
+      const promise = Axios.post(
         `https://0n06dowzs1.execute-api.us-east-2.amazonaws.com/dev_us_east_2/risk`,
         {
           json_body: JSON.stringify(this.form_fields)
         }
-      ).then(response => {
+      );
+      this.submitting = true;
+      promise.then(response => {
         this.http_response = response.data;
         this.form_fields = {};
+        this.error_message = "";
         alert("Risk created successfully");
+        this.submitting = false;
       });
     }
   },
