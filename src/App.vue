@@ -18,34 +18,41 @@
         <h6 v-if="risk_type.risk_name">Risk type: {{ risk_type.risk_type }}</h6>
         <form>
           <div v-for="field of risk_type.risk_fields" v-bind:key="field.id">
-            <span style="font-size:12px">{{ field.field_name }}:</span>
             <input
               v-model="form_fields[field.field_name]"
               v-if="field.field_type === 'text'"
               type="text"
+              :placeholder="field.field_name"
             >
             <input
               v-model="form_fields[field.field_name]"
               v-if="field.field_type === 'number'"
               type="number"
+              :placeholder="field.field_name"
             >
-            <input
-              v-model="form_fields[field.field_name]"
-              v-if="field.field_type === 'date'"
-              type="date"
-            >
-            <select
-              v-model="form_fields[field.field_name]"
-              v-if="field.field_type === 'enum'"
-              name
-              id
-            >
-              <option
-                v-for="choice of JSON.parse(field.enum_choices)"
-                :key="choice"
-                v-bind:value="choice"
-              >{{choice}}</option>
-            </select>
+            <div v-if="field.field_type === 'date'">
+              <span
+                style="width:20%;font-size:16px;margin-right:13%"
+              >{{field.field_name.toUpperCase()}}:</span>
+              <input
+                style="width:40% !important"
+                v-model="form_fields[field.field_name]"
+                type="date"
+                :placeholder="field.field_name"
+              >
+            </div>
+            <div v-if="field.field_type === 'enum'">
+              <span
+                style="width:20%;font-size:16px;margin-right:13%"
+              >{{field.field_name.toUpperCase()}}:</span>
+              <select style="width:40% !important" v-model="form_fields[field.field_name]" name id>
+                <option
+                  v-for="choice of JSON.parse(field.enum_choices)"
+                  :key="choice"
+                  v-bind:value="choice"
+                >{{choice}}</option>
+              </select>
+            </div>
           </div>
           <div>
             <span style="color:red">{{ error_message }}</span>
@@ -69,6 +76,7 @@
         </div>
       </div>
     </div>
+    <Footer/>
   </div>
 </template>
 
@@ -76,6 +84,7 @@
 import Axios from "axios";
 
 import TopBar from "./components/TopBar.vue";
+import Footer from "./components/Footer.vue";
 
 export default {
   name: "app",
@@ -91,7 +100,8 @@ export default {
     };
   },
   components: {
-    TopBar
+    TopBar,
+    Footer
   },
   methods: {
     setContentId: function(id) {
@@ -216,5 +226,36 @@ export default {
 
 .active {
   text-decoration: underline;
+}
+
+input,
+select {
+  font-size: 16px !important;
+  line-height: 22px !important;
+  letter-spacing: normal !important;
+  font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto,
+    "Helvetica Neue", sans-serif !important;
+  color: rgb(72, 72, 72) !important;
+  font-weight: normal !important;
+  background-color: transparent !important;
+  width: 60% !important;
+  border-width: 1px !important;
+  border-style: initial !important;
+  border-color: initial !important;
+  border-image: initial !important;
+  padding: 11px !important;
+  border-radius: 2px !important;
+  border-bottom-style: solid !important;
+}
+
+button {
+  width: 60%;
+  height: 40px;
+  font-size: 24px;
+  margin-top: 20px;
+  color: white;
+  background-color: #303e4e;
+  border-radius: 3px;
+  margin-bottom: 20px;
 }
 </style>
